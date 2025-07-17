@@ -1,156 +1,202 @@
-# electron-shadcn
+# WhisperPaste
 
-Electron in all its glory. Everything you will need to develop your beautiful desktop application.
+一个基于 AI 语音识别的桌面应用程序，可以将语音转换为文字并自动粘贴到剪切板。
 
-![Demo GIF](https://github.com/LuanRoger/electron-shadcn/blob/main/images/demo.gif)
+![WhisperPaste](https://img.shields.io/badge/Electron-36.5.0-blue?logo=electron)
+![React](https://img.shields.io/badge/React-19.1.0-blue?logo=react)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.8.3-blue?logo=typescript)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-4.1.11-blue?logo=tailwindcss)
 
-## Libs and tools
+## ✨ 功能特性
 
-To develop a Electron app, you probably will need some UI, test, formatter, style or other kind of library or framework, so let me install and configure some of them to you.
+- 🎤 **AI 语音识别** - 使用 OpenAI Whisper API 进行高精度语音转文字
+- 📋 **自动粘贴** - 识别结果自动复制到系统剪切板
+- 🌍 **多语言支持** - 支持中文和英文界面切换
+- 🎨 **现代化 UI** - 基于 Shadcn/ui 和 Tailwind CSS 的精美界面
+- 🌙 **主题切换** - 支持明暗主题切换
+- ⚙️ **灵活配置** - 可自定义 API 端点和密钥
+- 🖥️ **跨平台** - 支持 Windows、macOS 和 Linux
+- 📱 **系统托盘** - 最小化到系统托盘，随时可用
+- 🔒 **隐私保护** - 本地处理，数据安全
 
-### Core 🏍️
+## 🚀 快速开始
 
-- [Electron 35](https://www.electronjs.org)
-- [Vite 6](https://vitejs.dev)
-- [SWC](https://swc.rs)
+### 环境要求
 
-### DX 🛠️
+- Node.js 18+ 
+- npm 或 yarn
 
-- [TypeScript 5.8](https://www.typescriptlang.org)
-- [Prettier](https://prettier.io)
-- [ESLint 9](https://eslint.org)
-- [Zod](https://zod.dev)
-- [React Query (TanStack)](https://react-query.tanstack.com)
-
-### UI 🎨
-
-- [React 19](https://reactjs.org)
-- [Tailwind 4](https://tailwindcss.com)
-- [Shadcn UI](https://ui.shadcn.com)
-- [Geist](https://vercel.com/font) as default font
-- [i18next](https://www.i18next.com)
-- [TanStack Router](https://tanstack.com/router)
-- [Lucide](https://lucide.dev)
-
-### Test 🧪
-
-- [Vitest](https://vitest.dev)
-- [Playwright](https://playwright.dev)
-- [React Testing Library](https://testing-library.com/docs/react-testing-library/intro)
-
-### Packing and distribution 📦
-
-- [Electron Forge](https://www.electronforge.io)
-
-### CI/CD 🚀
-
-- Pre-configured [GitHub Actions workflow](https://github.com/LuanRoger/electron-shadcn/blob/main/.github/workflows/playwright.yml), for test with Playwright
-
-### Project preferences 🎯
-
-- Use Context isolation
-- [React Compiler](https://react.dev/learn/react-compiler) is enabled by default.
-- `titleBarStyle`: hidden (Using custom title bar)
-- Geist as default font
-- Some default styles was applied, check the [`styles`](https://github.com/LuanRoger/electron-shadcn/tree/main/src/styles) directory
-- React DevTools are installed by default
-
-> If you don't know some of these libraries or tools, I recommend you to check their documentation to understand how they work and how to use them.
-
-> [!WARNING]
-> Prefer to use the [`canary` release of `shadcn/ui`](https://ui.shadcn.com/docs/tailwind-v4) to avoid compatibility issues with React 19 and Tailwind v4.
-
-```bash
-npx shadcn@canary add button
-```
-
-## Directory structure
-
-```plaintext
-.
-└── ./src/
-    ├── ./src/assets/
-    │   └── ./src/assets/fonts/
-    ├── ./src/components/
-    │   ├── ./src/components/template
-    │   └── ./src/components/ui/
-    ├── ./src/helpers/
-    │   └── ./src/helpers/ipc/
-    ├── ./src/layout/
-    ├── ./src/lib/
-    ├── ./src/pages/
-    ├── ./src/style/
-    └── ./src/tests/
-```
-
-- `src/`: Main directory
-  - `assets/`: Store assets like images, fonts, etc.
-  - `components/`: Store UI components
-    - `template/`: Store the all not important components used by the template. It doesn't include the `WindowRegion` or the theme toggler, if you want to start an empty project, you can safely delete this directory.
-    - `ui/`: Store Shadcn UI components (this is the default direcotry used by Shadcn UI)
-  - `helpers/`: Store IPC related functions to be called in the renderer process
-    - `ipc/`: Directory to store IPC context and listener functions
-      - Some implementations are already done, like `theme` and `window` for the custom title bar
-  - `layout/`: Directory to store layout components
-  - `lib/`: Store libraries and other utilities
-  - `pages/`: Store app's pages
-  - `style/`: Store global styles
-  - `tests/`: Store tests (from Vitest and Playwright)
-
-## NPM script
-
-To run any of those scripts:
-
-```bash
-npm run <script>
-```
-
-- `start`: Start the app in development mode
-- `package`: Package your application into a platform-specific executable bundle and put the result in a folder.
-- `make`: Generate platform-specific distributables (e.g. .exe, .dmg, etc) of your application for distribution.
-- `publish`: Electron Forge's way of taking the artifacts generated by the `make` command and sending them to a service somewhere for you to distribute or use as updates.
-- `lint`: Run ESLint to lint the code
-- `format`: Run Prettier to check the code (it doesn't change the code)
-- `format:write`: Run Prettier to format the code
-- `test`: Run the default unit-test script (Vitest)
-- `test:watch`: Run the default unit-test script in watch mode (Vitest)
-- `test:unit`: Run the Vitest tests
-- `test:e2e`: Run the Playwright tests
-- `test:all`: Run all tests (Vitest and Playwright)
-
-> The test scripts involving Playwright require the app be builded before running the tests. So, before run the tests, run the `package`, `make` or `publish` script.
-
-## How to use
-
-1. Clone this repository
-
-```bash
-git clone https://github.com/LuanRoger/electron-shadcn.git
-```
-
-Or use it as a template on GitHub
-
-2. Install dependencies
+### 安装依赖
 
 ```bash
 npm install
 ```
 
-3. Run the app
+### 开发模式
 
 ```bash
 npm run start
 ```
 
-## Used by
+### 构建应用
 
-- [yaste](https://github.com/LuanRoger/yaste) - yaste (Yet another super ₛᵢₘₚₗₑ text editor) is a text editor, that can be used as an alternative to the native text editor of your SO, maybe.
-- [eletric-drizzle](https://github.com/LuanRoger/electric-drizzle) - shadcn-ui and Drizzle ORM with Electron.
-- [Wordle Game](https://github.com/masonyekta/wordle-game) - A Wordle game which features interactive gameplay, cross-platform compatibility, and integration with a custom Wordle API for word validation and letter correctness.
-- [Mehr 🌟](https://github.com/xmannii/MehrLocalChat) - A modern, elegant local AI chatbot application using Electron, React, shadcn/ui, and Ollama.
+```bash
+# 打包应用
+npm run package
 
-> Does you've used this template in your project? Add it here and open a PR.
+# 生成安装包
+npm run make
 
-## License
+# 发布应用
+npm run publish
+```
 
-This project is licensed under the MIT License - see the [LICENSE](https://github.com/LuanRoger/electron-shadcn/blob/main/LICENSE) file for details.
+## 🛠️ 技术栈
+
+### 核心框架 🏍️
+
+- [Electron 36](https://www.electronjs.org) - 跨平台桌面应用框架
+- [React 19](https://reactjs.org) - 用户界面库
+- [TypeScript 5.8](https://www.typescriptlang.org) - 类型安全的 JavaScript
+- [Vite 6](https://vitejs.dev) - 现代化构建工具
+
+### UI 组件 🎨
+
+- [Tailwind CSS 4](https://tailwindcss.com) - 实用优先的 CSS 框架
+- [Shadcn/ui](https://ui.shadcn.com) - 高质量的 React 组件库
+- [Radix UI](https://www.radix-ui.com) - 无样式的 UI 原语
+- [Lucide React](https://lucide.dev) - 精美的图标库
+- [Framer Motion](https://www.framer.com/motion) - 动画库
+
+### 路由和状态管理 🔄
+
+- [TanStack Router](https://tanstack.com/router) - 类型安全的路由
+- [Zustand](https://zustand-demo.pmnd.rs) - 轻量级状态管理
+- [TanStack Query](https://tanstack.com/query) - 数据获取和缓存
+
+### 国际化 🌍
+
+- [i18next](https://www.i18next.com) - 国际化框架
+- [react-i18next](https://react.i18next.com) - React 国际化绑定
+
+### 开发工具 🛠️
+
+- [ESLint 9](https://eslint.org) - 代码检查
+- [Prettier](https://prettier.io) - 代码格式化
+- [Vitest](https://vitest.dev) - 单元测试
+- [Playwright](https://playwright.dev) - 端到端测试
+
+### 打包和分发 📦
+
+- [Electron Forge](https://www.electronforge.io) - Electron 应用打包工具
+
+## 📁 项目结构
+
+```
+src/
+├── assets/                 # 静态资源
+│   ├── fonts/             # 字体文件
+│   └── icons/             # 图标文件
+├── components/            # React 组件
+│   ├── template/          # 模板组件
+│   └── ui/               # UI 组件库
+├── helpers/              # 工具函数
+│   └── ipc/              # IPC 通信相关
+├── layouts/              # 布局组件
+├── localization/         # 国际化配置
+├── pages/                # 页面组件
+├── routes/               # 路由配置
+├── services/             # API 服务
+├── stores/               # 状态管理
+├── styles/               # 全局样式
+├── tests/                # 测试文件
+├── types/                # TypeScript 类型定义
+└── utils/                # 通用工具函数
+```
+
+## 🎯 使用说明
+
+### 1. 配置 API
+
+首次使用需要配置 OpenAI API：
+
+1. 点击设置页面
+2. 输入 Base URL（默认：`https://api.openai.com`）
+3. 输入您的 API Key
+4. 点击测试连接确保配置正确
+
+### 2. 语音识别
+
+1. 点击麦克风按钮开始录音
+2. 说话完毕后点击停止
+3. 等待 AI 处理语音
+4. 识别结果自动复制到剪切板
+
+### 3. 快捷操作
+
+- 应用会自动隐藏到系统托盘
+- 点击托盘图标可重新显示窗口
+- 点击窗口外部区域自动隐藏窗口
+
+## 🔧 配置选项
+
+### API 设置
+- **Base URL**: OpenAI API 端点地址
+- **API Key**: 您的 OpenAI API 密钥
+
+### 界面设置
+- **语言切换**: 支持中文/英文
+- **主题切换**: 明亮/暗黑主题
+
+### 隐私设置
+- **历史记录**: 可选择保存或清理历史
+- **自动更新**: 控制应用自动更新行为
+
+## 📝 可用脚本
+
+```bash
+# 开发
+npm run start          # 启动开发服务器
+npm run lint           # 代码检查
+npm run format         # 检查代码格式
+npm run format:write   # 格式化代码
+
+# 测试
+npm run test           # 运行单元测试
+npm run test:watch     # 监听模式运行测试
+npm run test:e2e       # 运行端到端测试
+npm run test:all       # 运行所有测试
+
+# 构建
+npm run package        # 打包应用
+npm run make           # 生成安装包
+npm run publish        # 发布应用
+```
+
+## 🤝 贡献指南
+
+1. Fork 本仓库
+2. 创建特性分支 (`git checkout -b feature/AmazingFeature`)
+3. 提交更改 (`git commit -m 'Add some AmazingFeature'`)
+4. 推送到分支 (`git push origin feature/AmazingFeature`)
+5. 打开 Pull Request
+
+## 📄 许可证
+
+本项目基于 MIT 许可证开源 - 查看 [LICENSE](LICENSE) 文件了解详情。
+
+## 👨‍💻 作者
+
+**w1ndyz** - [w1ndyz0618@gmail.com](mailto:w1ndyz0618@gmail.com)
+
+## 🙏 致谢
+
+- [OpenAI](https://openai.com) - 提供强大的 Whisper API
+- [Electron](https://www.electronjs.org) - 跨平台桌面应用框架
+- [Shadcn/ui](https://ui.shadcn.com) - 优秀的 React 组件库
+- [Electron-Shadcn](https://github.com/LuanRoger/electron-shadcn) - Electron Forge with shadcn-ui 
+- 所有开源贡献者
+
+---
+
+如果这个项目对您有帮助，请给个 ⭐️ 支持一下！

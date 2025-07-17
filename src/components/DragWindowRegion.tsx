@@ -14,7 +14,7 @@ export default function DragWindowRegion({ title }: DragWindowRegionProps) {
     <div className="flex w-screen items-stretch justify-between">
       <div className="draglayer w-full">
         {title && (
-          <div className="flex flex-1 select-none whitespace-nowrap p-2 text-xs text-gray-400">
+          <div className="flex flex-1 select-none whitespace-nowrap p-2 text-xs text-foreground font-bold justify-center items-center">
             {title}
           </div>
         )}
@@ -27,7 +27,7 @@ export default function DragWindowRegion({ title }: DragWindowRegionProps) {
 function WindowButtons() {
   return (
     <div className="flex">
-      <button
+      {/* <button
         title="Minimize"
         type="button"
         className="p-2 hover:bg-slate-300"
@@ -85,7 +85,7 @@ function WindowButtons() {
             points="11 1.576 6.583 6 11 10.424 10.424 11 6 6.583 1.576 11 1 10.424 5.417 6 1 1.576 1.576 1 6 5.417 10.424 1"
           ></polygon>
         </svg>
-      </button>
+      </button> */}
     </div>
   );
 }

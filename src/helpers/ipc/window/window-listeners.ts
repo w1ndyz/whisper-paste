@@ -6,6 +6,11 @@ import {
 } from "./window-channels";
 
 export function addWindowEventListeners(mainWindow: BrowserWindow) {
+  // Remove existing handlers to prevent duplicate registration
+  ipcMain.removeHandler(WIN_MINIMIZE_CHANNEL);
+  ipcMain.removeHandler(WIN_MAXIMIZE_CHANNEL);
+  ipcMain.removeHandler(WIN_CLOSE_CHANNEL);
+
   ipcMain.handle(WIN_MINIMIZE_CHANNEL, () => {
     mainWindow.minimize();
   });
