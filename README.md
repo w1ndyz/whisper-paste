@@ -1,5 +1,9 @@
 # WhisperPaste
 
+<div align="center">
+  <img src="src/assets/logo.png" alt="WhisperPaste Logo" width="128" height="128">
+</div>
+
 一个基于 AI 语音识别的桌面应用程序，可以将语音转换为文字并自动粘贴到剪切板。
 
 ![WhisperPaste](https://img.shields.io/badge/Electron-36.5.0-blue?logo=electron)
