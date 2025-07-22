@@ -5,7 +5,7 @@ import { MessageLoading } from "@/components/ui/message-loading";
 import KeyBoardDefault from "@/components/KeyBoard";
 import Toaster, { ToasterRef } from "@/components/ui/toast";
 import { useConfigStore } from "@/stores/config-store";
-import { openAIService } from "@/services/openai-api";
+import { speechRecognitionService } from "@/services/speech-recognition";
 import { useTranslation } from "react-i18next";
 
 export default function HomePage() {
@@ -54,8 +54,8 @@ export default function HomePage() {
         // 将Blob转换为File对象
         const audioFile = new File([audioBlob], 'recording.wav', { type: 'audio/wav' });
 
-        // 调用OpenAI Whisper API进行语音转文字
-        const result = await openAIService.transcribeAudio(audioFile);
+        // 调用统一的语音识别服务进行语音转文字
+        const result = await speechRecognitionService.transcribeAudio(audioFile);
 
         if (result.success && result.data?.text) {
           const transcribedText = result.data.text.trim();

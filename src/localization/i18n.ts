@@ -77,6 +77,20 @@ i18n.use(initReactI18next).init({
 
         // Keyboard Instructions
         pressAndHoldThe: "按住",
+
+        // Speech Recognition Service (new)
+        speechRecognitionService: "语音识别服务",
+        serviceProvider: "服务提供商",
+        openaiWhisper: "OpenAI Whisper",
+        alicloudAsr: "阿里云语音识别",
+        openaiDescription: "使用OpenAI的Whisper API进行语音识别",
+        alicloudDescription: "使用阿里云实时语音识别服务，延迟更低",
+        appKey: "App Key",
+        accessToken: "Access Token",
+        gatewayUrl: "Gateway URL",
+        enterAppKey: "请输入阿里云AppKey",
+        enterAccessToken: "请输入Access Token",
+        enterGatewayUrl: "请输入Gateway地址",
       },
     },
     en: {
@@ -151,6 +165,20 @@ i18n.use(initReactI18next).init({
 
         // Keyboard Instructions
         pressAndHoldThe: "Press and hold the",
+
+        // Speech Recognition Service (new)
+        speechRecognitionService: "Speech Recognition Service",
+        serviceProvider: "Service Provider",
+        openaiWhisper: "OpenAI Whisper",
+        alicloudAsr: "Alibaba Cloud ASR",
+        openaiDescription: "Use OpenAI's Whisper API for speech recognition",
+        alicloudDescription: "Use Alibaba Cloud real-time ASR service with lower latency",
+        appKey: "App Key",
+        accessToken: "Access Token",
+        gatewayUrl: "Gateway URL",
+        enterAppKey: "Enter Alibaba Cloud AppKey",
+        enterAccessToken: "Enter Access Token",
+        enterGatewayUrl: "Enter Gateway URL",
       },
     },
   },

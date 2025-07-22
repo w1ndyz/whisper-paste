@@ -3,7 +3,7 @@ import Footer2 from "@/components/template/Footer2";
 import { useTranslation } from "react-i18next";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { MinimalToggle, OrangeToggle } from "@/components/ui/toggle";
+import { OrangeToggle } from "@/components/ui/toggle";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useNavigate } from "@tanstack/react-router";
 import { setTheme } from "@/helpers/theme_helpers";
@@ -11,13 +11,15 @@ import { ThemeMode } from "@/types/theme-mode";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { useConfigStore } from "@/stores/config-store";
+import { useConfigStore, type ServiceProvider } from "@/stores/config-store";
+import { SpeechRecognitionService } from "@/services/speech-recognition";
 
 export default function SecondPage() {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
 
   // State for settings
+  const [serviceProvider, setServiceProviderState] = useState<ServiceProvider>("openai");
   const [baseUrl, setBaseUrl] = useState("");
   const [apiKey, setApiKey] = useState("");
   const [saveHistory, setSaveHistory] = useState(true);
@@ -37,6 +39,7 @@ export default function SecondPage() {
     if (savedSettings) {
       try {
         const settings = JSON.parse(savedSettings);
+        setServiceProviderState(settings.serviceProvider || "openai");
         setBaseUrl(settings.baseUrl || "");
         setApiKey(settings.apiKey || "");
         setSaveHistory(settings.saveHistory ?? true);
@@ -56,6 +59,7 @@ export default function SecondPage() {
   const handleSave = async () => {
     // Save settings to localStorage
     const settings = {
+      serviceProvider,
       baseUrl,
       apiKey,
       saveHistory,
@@ -89,7 +93,29 @@ export default function SecondPage() {
   };
 
   // 使用全局配置状态
-  const { testApiConnection, updateConfig } = useConfigStore();
+  const { testApiConnection, updateConfig, setServiceProvider } = useConfigStore();
+
+  // 处理服务商变更
+  const handleServiceProviderChange = (provider: ServiceProvider) => {
+    setServiceProviderState(provider);
+    setServiceProvider(provider);
+
+    // 清除之前的配置字段
+    setBaseUrl("");
+    setApiKey("");
+
+    // 重置API测试状态
+    setApiTestResult(null);
+    setApiTestMessage("");
+  };
+
+  // 获取当前服务商的配置字段
+  const getConfigFields = () => {
+    return SpeechRecognitionService.getProviderConfigFields(serviceProvider);
+  };
+
+  // 获取支持的服务商列表
+  const supportedProviders = SpeechRecognitionService.getSupportedProviders();
 
   const handleTestApi = async () => {
     if (!baseUrl || !apiKey) {
@@ -127,43 +153,77 @@ export default function SecondPage() {
   return (
     <div className="flex h-full flex-col bg-background">
       <div className="flex-1 p-4 overflow-y-auto relative">
-        <div className="max-w-lg mx-auto space-y-4" style={{ minHeight: '100%', position: 'relative' }}>
-          {/* 高级设置 */}
+        <div className="max-w-md mx-auto space-y-4" style={{ minHeight: '100%', position: 'relative' }}>
+          {/* 语音识别服务选择 */}
           <div>
-            <h2 className="text-sm font-medium mb-2 text-muted-foreground">{t('advancedSettings')}</h2>
-            <div className="space-y-3">
-              <div className="space-y-1">
-                <Label htmlFor="base-url" className="text-xs">{t('baseUrl')}</Label>
-                <Input
-                  id="base-url"
-                  placeholder="https://api.openai.com"
-                  value={baseUrl}
-                  onChange={(e) => setBaseUrl(e.target.value)}
-                  className="h-8 text-xs"
-                />
+            <h2 className="text-sm font-medium mb-3 text-muted-foreground">{t('speechRecognitionService')}</h2>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="service-provider" className="text-xs font-medium">{t('serviceProvider')}</Label>
+                <Select value={serviceProvider} onValueChange={handleServiceProviderChange}>
+                  <SelectTrigger className="h-9 text-sm">
+                    <SelectValue placeholder={t('serviceProvider')}>
+                      {t(supportedProviders.find(p => p.value === serviceProvider)?.label || '')}
+                    </SelectValue>
+                  </SelectTrigger>
+                  <SelectContent>
+                    {supportedProviders.map((provider) => (
+                      <SelectItem
+                        key={provider.value}
+                        value={provider.value}
+                        className="py-3"
+                      >
+                        <div className="flex flex-col items-start w-full space-y-1">
+                          <span className="font-medium text-sm">
+                            {t(provider.label)}
+                          </span>
+                          <span className="text-xs text-muted-foreground">
+                            {t(provider.description)}
+                          </span>
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
-              <div className="space-y-1">
-                <Label htmlFor="api-key" className="text-xs">{t('apiKey')}</Label>
-                <Input
-                  id="api-key"
-                  type="password"
-                  placeholder={t('enterApiKey')}
-                  value={apiKey}
-                  onChange={(e) => setApiKey(e.target.value)}
-                  className="h-8 text-xs"
-                />
-              </div>
+
+              {/* 动态配置字段 */}
+              {getConfigFields().map((field, index) => {
+                // 处理特殊情况：阿里云的第三个字段
+                const isThirdField = index === 2 && serviceProvider === 'alicloud';
+                const currentValue = isThirdField ? 'https://nls-gateway.cn-shanghai.aliyuncs.com' :
+                  (index === 0 ? baseUrl : apiKey);
+
+                return (
+                  <div key={field.key} className="space-y-2">
+                    <Label htmlFor={field.key} className="text-xs font-medium">{t(field.key) || field.label}</Label>
+                    <Input
+                      id={field.key}
+                      type={field.type || 'text'}
+                      placeholder={t(field.placeholder) || field.placeholder}
+                      value={currentValue}
+                      onChange={(e) => {
+                        if (index === 0) setBaseUrl(e.target.value);
+                        else if (index === 1) setApiKey(e.target.value);
+                        // 第三个字段（Gateway URL）暂时不允许修改，使用默认值
+                      }}
+                      disabled={isThirdField} // 第三个字段暂时禁用
+                      className="h-9 text-sm"
+                    />
+                  </div>
+                );
+              })}
 
               {/* API测试 */}
               <div className="space-y-2">
-                <Label htmlFor="status-test" className="text-xs">{t('connectivity')}</Label>
-                <div className="flex items-center gap-2">
+                <Label htmlFor="status-test" className="text-xs font-medium">{t('connectivity')}</Label>
+                <div className="flex items-center gap-3 flex-wrap">
                   <Button
                     onClick={handleTestApi}
                     disabled={isTestingApi || !baseUrl || !apiKey}
                     size="sm"
                     variant="outline"
-                    className="h-7 text-xs"
+                    className="h-8 text-xs flex-shrink-0"
                   >
                     {isTestingApi ? t('testingApi') : t('testApiConnection')}
                   </Button>
@@ -171,7 +231,7 @@ export default function SecondPage() {
                   {apiTestResult && (
                     <Badge
                       variant={apiTestResult === 'success' ? 'outline' : 'destructive'}
-                      className="text-xs"
+                      className="text-xs max-w-full break-words"
                     >
                       {apiTestResult === 'success' ? '✅ ' : '❌ '}
                       {apiTestMessage}
@@ -181,6 +241,7 @@ export default function SecondPage() {
               </div>
             </div>
           </div>
+
 
           <Separator />
 
